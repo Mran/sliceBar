@@ -7,6 +7,9 @@ import android.graphics.*
 import android.util.AttributeSet
 import android.util.Log
 import android.view.View
+import android.view.animation.AccelerateDecelerateInterpolator
+import android.view.animation.Animation
+import android.view.animation.Transformation
 import kotlin.math.abs
 
 class SliceItemView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
@@ -14,10 +17,10 @@ class SliceItemView @JvmOverloads constructor(context: Context, attrs: Attribute
 
 
     val paint = Paint()
-    val paintColor = 0xffff62
-    val paintSize = 40.0f
+    var paintColor = 0xffff62
+    var paintSize = 40.0f
     val paintSelectColor = 0x000000
-    var iconResource = R.drawable.home
+    var iconResource = 0
     var text = "123123"
     //中心点坐标
     var centerX = 0
@@ -44,10 +47,11 @@ class SliceItemView @JvmOverloads constructor(context: Context, attrs: Attribute
     var textWidth = 0
     var textAlpha = 0
     var valueAnimator = ValueAnimator()
-    var currentValue = 0
-    var targetValue = 100
+    var currentValue = 0f
+    var targetValue = 1f
     var isCancel = false
 
+    //运动状态
     enum class State {
         MOVE_TO_SELECT,
         SELECT,
@@ -55,45 +59,102 @@ class SliceItemView @JvmOverloads constructor(context: Context, attrs: Attribute
         MOVE_TO_NORMAL
     }
 
-    init {
-        paint.isAntiAlias = true
-        paint.color = Color.BLACK
-        paint.textSize = paintSize
-        iconBitmap = BitmapFactory.decodeResource(context!!.resources, iconResource)
-    }
+    var updateListener = ValueAnimator.AnimatorUpdateListener {
+        currentValue = it.animatedValue as Float
+//        Log.d("applyTransformation", "${currentValue}")
 
-    override fun onDraw(canvas: Canvas?) {
-        super.onDraw(canvas)
-        if (canvas != null) {
-            canvas.drawBitmap(iconBitmap!!, iconX, iconY, paint)
-            val lastAlpha = paint.alpha
-            paint.alpha = textAlpha
-            canvas.drawText(text, cX, cY, paint)
-            paint.alpha = lastAlpha
+        iconX = iconStartX - abs((iconStartX - iconEndX)) * (currentValue)
+        textAlpha = (currentValue * 255).toInt()
+        invalidate()
+    }
+    var animatorListener = object : Animator.AnimatorListener {
+        override fun onAnimationStart(animation: Animator?) {
+//            Log.d("onAnimationStart", "onAnimationStart")
+
+            isCancel = false
+            when (state) {
+                State.NORMAL -> {
+                    state = State.MOVE_TO_SELECT
+                }
+                State.SELECT -> {
+                    state = State.MOVE_TO_NORMAL
+                }
+
+            }
+        }
+
+        override fun onAnimationRepeat(animation: Animator?) {
+        }
+
+        override fun onAnimationEnd(animation: Animator?) {
+
+            when (state) {
+                State.MOVE_TO_NORMAL -> {
+                    state = State.NORMAL
+                    targetValue = 1f
+                    currentValue = 0f
+//                    Log.d("onAnimationEnd", "MOVE_TO_NORMAL")
+                }
+                State.MOVE_TO_SELECT -> {
+                    state = State.SELECT
+                    targetValue = 0f
+                    currentValue = 1f
+//                    Log.d("onAnimationEnd", "MOVE_TO_SELECT")
+                }
+
+            }
+        }
+
+        override fun onAnimationCancel(animation: Animator?) {
+
+
         }
     }
 
-    //画出正常状态
-    private fun drawNormal(canvas: Canvas) {
+    init {
+        paint.isAntiAlias = true
+        paint.color = Color.WHITE
+        paint.textSize = paintSize
+        setLayerType(LAYER_TYPE_HARDWARE, paint)
+
+        valueAnimator.duration = 200L
+        valueAnimator.interpolator = AccelerateDecelerateInterpolator()
+        valueAnimator.addUpdateListener(updateListener)
+        valueAnimator.addListener(animatorListener)
+    }
+
+    fun setIcon(icon: Int) {
+        iconResource = icon
+        iconBitmap = BitmapFactory.decodeResource(context!!.resources, iconResource)
+        invalidate()
+    }
+
+    fun setName(name: String) {
+        this.text = name
+        invalidate()
+    }
+
+    fun setTextColor(color: Int) {
+        this.paintColor = color
+        paint.color = color
+        invalidate()
+    }
+
+    fun setTextSize(size: Float) {
+        this.paintSize = size
+        paint.textSize = size
+        invalidate()
+    }
+
+    override fun onDraw(canvas: Canvas) {
+        super.onDraw(canvas)
+        if (iconBitmap != null)
+            canvas.drawBitmap(iconBitmap, iconX, iconY, paint)
+        val lastAlpha = paint.alpha
+        paint.alpha = textAlpha
         canvas.drawText(text, cX, cY, paint)
-        canvas.drawBitmap(iconBitmap!!, iconX, iconY, paint)
+        paint.alpha = lastAlpha
     }
-
-    //画出选择状态
-    private fun drawSelect(canvas: Canvas) {
-        canvas.drawText(text, cX, 0f, paint)
-    }
-
-    //画出从正常到选择的中间态
-    private fun drawMoveToSelect(canvas: Canvas) {
-        canvas.drawText(text, cX, 0f, paint)
-    }
-
-    //画出从选择到正常的中间态
-    private fun drawMoveToNormal(canvas: Canvas) {
-        canvas.drawText(text, cX, 0f, paint)
-    }
-
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
@@ -112,107 +173,34 @@ class SliceItemView @JvmOverloads constructor(context: Context, attrs: Attribute
         //获取文字的坐标
         cX = centerX.toFloat()
         cY = (heightSpecSize / 2).toFloat() + textHeight / 2
-        //获取图标的起始坐标
-        iconStartX = (centerX - iconBitmap!!.width / 2).toFloat()
-        //获取图标的终止坐标
-        iconEndX = (centerX / 2 - iconBitmap!!.width / 2).toFloat()
-
-        //初始化图标运动坐标
-        iconX = iconStartX
-        iconY = (centerY - iconBitmap!!.height / 2).toFloat()
-    }
-
-    override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
-        super.onLayout(changed, left, top, right, bottom)
-    }
-
-    fun move() {
-        valueAnimator.cancel()
-        valueAnimator.duration = (3000 * (abs(targetValue - currentValue)) / 100).toLong()
-        valueAnimator.setIntValues(currentValue, targetValue)
-        valueAnimator.addUpdateListener {
-            println(it.animatedValue as Int)
-            currentValue = it.animatedValue as Int
+        if (iconBitmap != null) {
+            //获取图标的起始坐标
+            iconStartX = (centerX - iconBitmap!!.width / 2).toFloat()
+            //获取图标的终止坐标
+            iconEndX = (centerX / 2 - iconBitmap!!.width / 2).toFloat()
+            //初始化图标运动坐标
+            iconX = iconStartX
+            iconY = (centerY - iconBitmap!!.height / 2).toFloat()
         }
 
-        valueAnimator.addListener(object : Animator.AnimatorListener {
-            override fun onAnimationStart(animation: Animator?) {
-                isCancel = false
-                when (state) {
-                    State.NORMAL -> {
-                        state = State.MOVE_TO_SELECT
+    }
 
 
-                    }
-                    State.SELECT -> {
-                        state = State.MOVE_TO_NORMAL
-                    }
-
-                }
-            }
-
-            override fun onAnimationRepeat(animation: Animator?) {
-            }
-
-            override fun onAnimationEnd(animation: Animator?) {
-                if (isCancel) {
-
-                    return
-                }
-                when (state) {
-                    State.MOVE_TO_NORMAL -> {
-                        state = State.NORMAL
-                        targetValue = 100
-                        currentValue = 0
-                        Log.d("onAnimationEnd", "MOVE_TO_NORMAL")
-
-                    }
-                    State.MOVE_TO_SELECT -> {
-                        state = State.SELECT
-                        targetValue = 0
-                        currentValue = 100
-                        Log.d("onAnimationEnd", "MOVE_TO_SELECT")
-
-                    }
-
-                }
-            }
-
-            override fun onAnimationCancel(animation: Animator?) {
-                if (isCancel)
-                    return
-                isCancel = true
-                if (state == State.MOVE_TO_NORMAL) {
-                    state = State.MOVE_TO_SELECT
-                    targetValue = 100
-                    Log.d("onAnimationCancel", "MOVE_TO_NORMAL")
-                    move()
-                    return
-                } else if (state == State.MOVE_TO_SELECT) {
-                    state = State.MOVE_TO_NORMAL
-                    targetValue = 0
-                    Log.d("onAnimationCancel", "MOVE_TO_SELECT")
-
-                    move()
-                    return
+    fun move() {
+        if (valueAnimator.isRunning) {
+            return
+        }
+        valueAnimator.cancel()
+        valueAnimator.duration = 200L
+        valueAnimator.setFloatValues(currentValue, targetValue)
 
 
-                }
-
-
-            }
-        })
         valueAnimator.start()
     }
 
     fun calcelMove() {
-        valueAnimator.cancel()
-//        valueAnimator.setDuration(3000)
-//        valueAnimator.setIntValues(currentValue, 0)
-//        valueAnimator.addUpdateListener {
-//            println(it.animatedValue as Int)
-//            currentValue = it.animatedValue as Int
-//        }
-//        valueAnimator.start()
+        valueAnimator.reverse()
+
+
     }
 }
