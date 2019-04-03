@@ -5,7 +5,7 @@ Animate bottom bar
 ![](https://github.com/Mran/sliceBar/blob/master/ezgif-1-b194a1e2259d.gif)
 ![](https://github.com/Mran/sliceBar/blob/master/ezgif-5-0a350aa1adfe.gif)
 一个是原图,另一个是demo
-#使用方法
+# 使用方法
 1. 导入项目
    clone本项目,引入`slicebottombar`module即可
 本控件使用kotlin编写,如果你是纯java的项目,你还需要调整gradle的配置喔
