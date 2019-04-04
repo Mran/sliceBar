@@ -20,6 +20,7 @@ Animate bottom bar
 		}
 	}
     ```
+    
     ```
     dependencies {
 	        implementation 'com.github.Mran:sliceBar:0.1'
