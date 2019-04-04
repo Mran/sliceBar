@@ -30,6 +30,7 @@ Animate bottom bar
 本控件使用kotlin编写,如果你是纯java的项目,你还需要调整gradle的配置喔
 2. 使用
 在xml布局中加入
+
     ```
     <com.mran.slicebottombar.SliceBottomBar android:layout_width="match_parent"
                                             android:background="#423ac4"
@@ -40,6 +41,7 @@ Animate bottom bar
 
     </com.mran.slicebottombar.SliceBottomBar>
     ```
+    
     在代码中(kotlin 代码作为演示)
     ```
         var icons = listOf(R.drawable.home, R.drawable.inbox, R.drawable.mine)
