@@ -44,7 +44,8 @@ Animate bottom bar
     ```
     
 在代码中(kotlin 代码作为演示)
-    ```
+
+ ```
         var icons = listOf(R.drawable.home, R.drawable.inbox, R.drawable.mine)
         var name = listOf("主页", "盒子", "个人")
         for (i in 0 until icons.size) {
@@ -60,5 +61,5 @@ Animate bottom bar
             }
         }
         findViewById<SliceBottomBar>(R.id.sliceBottomBar).onItemSelectListener = itemSelect
-    ```
+```
 
