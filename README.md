@@ -1,12 +1,16 @@
 # sliceBar
 
 Animate bottom bar
-    [![LICENSE](https://img.shields.io/badge/license-Anti%20996-blue.svg)](https://github.com/996icu/996.ICU/blob/master/LICENSE)
+
+[![LICENSE](https://img.shields.io/badge/license-Anti%20996-blue.svg)](https://github.com/996icu/996.ICU/blob/master/LICENSE)
     
 先放效果图
+
 ![](https://github.com/Mran/sliceBar/blob/master/ezgif-1-b194a1e2259d.gif)
 ![](https://github.com/Mran/sliceBar/blob/master/ezgif-5-0a350aa1adfe.gif)
+
 一个是原图,另一个是demo
+
 # 使用方法
 1. 导入项目
    ```allprojects {
