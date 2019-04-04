@@ -13,7 +13,8 @@ Animate bottom bar
 
 # 使用方法
 1. 导入项目
-   ```allprojects {
+   ```
+   	allprojects {
 		repositories {
 			...
 			maven { url 'https://jitpack.io' }
