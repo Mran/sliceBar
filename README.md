@@ -2,6 +2,11 @@
 
 Animate bottom bar
 
+这个是原图的地址
+
+https://uimovement.com/ui/7430/navigation-menu/ 
+
+
 [![LICENSE](https://img.shields.io/badge/license-Anti%20996-blue.svg)](https://github.com/996icu/996.ICU/blob/master/LICENSE)
     
 先放效果图
