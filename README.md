@@ -7,7 +7,7 @@ Animate bottom bar
 https://uimovement.com/ui/7430/navigation-menu/ 
 
 
-[![LICENSE](https://img.shields.io/badge/license-Anti%20996-blue.svg)](https://github.com/996icu/996.ICU/blob/master/LICENSE)
+[![LICENSE](https://img.shields.io/badge/license-Anti%20996-blue.svg)](https://github.com/996icu/996.ICU/blob/master/LICENSE)[![HitCount](http://hits.dwyl.io/mran/sliceBar.svg)](http://hits.dwyl.io/mran/sliceBar)
     
 先放效果图
 
