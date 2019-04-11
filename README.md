@@ -30,7 +30,7 @@ https://uimovement.com/ui/7430/navigation-menu/
     
     ```
     dependencies {
-	        implementation 'com.github.Mran:sliceBar:0.1'
+	        implementation 'com.github.Mran:sliceBar:0.2'
 	}
     ```
 本控件使用kotlin编写,如果你是纯java的项目,你还需要调整gradle的配置喔
@@ -63,10 +63,13 @@ https://uimovement.com/ui/7430/navigation-menu/
         var name = listOf("主页", "盒子", "个人")
         for (i in 0 until icons.size) {
             //向控件中加入单个item
-	    //addItem(图标,名称,颜色)
+	    //addItem(图标,名称)
             findViewById<SliceBottomBar>(R.id.sliceBottomBar).addItem(icons[i], name[i])
+	    //设置item的颜色
 	    findViewById<SliceBottomBar>(R.id.sliceBottomBar).setItemColor("#423ac4")
+	    //设置字号
             findViewById<SliceBottomBar>(R.id.sliceBottomBar).setItemTextSize(30.0f)
+	    //设置圆角的大小
             findViewById<SliceBottomBar>(R.id.sliceBottomBar).setRadiu(30.0f)
         }
         //加入选择监听
