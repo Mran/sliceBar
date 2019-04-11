@@ -19,7 +19,8 @@ https://uimovement.com/ui/7430/navigation-menu/
 # 使用方法
 1. 导入项目
    ```
-   	allprojects {
+   	
+	allprojects {
 		repositories {
 			...
 			maven { url 'https://jitpack.io' }
@@ -43,7 +44,7 @@ https://uimovement.com/ui/7430/navigation-menu/
                                             android:id="@+id/sliceBottomBar"
                                             app:layout_constraintBottom_toBottomOf="parent"
                                             android:layout_height="wrap_content"
-					     android:paddingTop="10dp"
+					    android:paddingTop="10dp"
                                             android:paddingLeft="10dp"
                                             app:itemHeight="45dp"
                                             app:itemRadius="10dp"
