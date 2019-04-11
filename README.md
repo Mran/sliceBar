@@ -39,11 +39,12 @@ https://uimovement.com/ui/7430/navigation-menu/
 在xml布局中加入
 
     ```
+    
     <com.mran.slicebottombar.SliceBottomBar android:layout_width="match_parent"
                                             android:background="#423ac4"
                                             android:id="@+id/sliceBottomBar"
                                             app:layout_constraintBottom_toBottomOf="parent"
-                                            android:layout_height="wrap_content"
+					    android:layout_height="wrap_content"
 					    android:paddingTop="10dp"
                                             android:paddingLeft="10dp"
                                             app:itemHeight="45dp"
@@ -52,6 +53,7 @@ https://uimovement.com/ui/7430/navigation-menu/
                                             tools:layout_editor_absoluteX="0dp">
 
     </com.mran.slicebottombar.SliceBottomBar>
+    
     ```
     
 在代码中(kotlin 代码作为演示)
