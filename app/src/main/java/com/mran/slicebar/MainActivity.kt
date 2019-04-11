@@ -16,7 +16,7 @@ class MainActivity : AppCompatActivity() {
         var icons = listOf(R.drawable.home, R.drawable.inbox, R.drawable.mine)
         var name = listOf("主页", "盒子", "个人")
         for (i in 0 until icons.size) {
-            findViewById<SliceBottomBar>(R.id.sliceBottomBar).addItem(icons[i], name[i], "#ffa3d553", 50f)
+            findViewById<SliceBottomBar>(R.id.sliceBottomBar).addItem(icons[i], name[i])
         }
         var itemSelect: SliceBottomBar.OnItemSelectListener = object : SliceBottomBar.OnItemSelectListener {
             override fun onSelected(index: Int) {

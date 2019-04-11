@@ -11,6 +11,11 @@
     <com.mran.slicebottombar.SliceBottomBar android:layout_width="match_parent"
                                             android:background="#423ac4"
                                             android:id="@+id/sliceBottomBar"
+                                            android:paddingTop="10dp"
+                                            android:paddingLeft="10dp"
+                                            app:itemHeight="45dp"
+                                            app:itemRadius="10dp"
+                                            app:itemBackgroundColor="#4ABFB5B5"
                                             app:layout_constraintBottom_toBottomOf="parent"
                                             android:layout_height="wrap_content"
                                             tools:layout_editor_absoluteX="0dp">

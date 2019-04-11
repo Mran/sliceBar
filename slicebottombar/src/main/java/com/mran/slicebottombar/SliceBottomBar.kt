@@ -11,29 +11,35 @@ import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import kotlin.math.abs
+import kotlin.math.max
+import kotlin.math.min
 
 class SliceBottomBar : ViewGroup {
 
     constructor(context: Context) : super(context) {
-        init()
+        init(context)
     }
 
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
-        init()
+        init(context, attrs)
+        mAttributeSet = attrs
+
     }
 
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
-        init()
+        init(context, attrs)
+
     }
 
+    private var mContext: Context? = null
+    private var mAttributeSet: AttributeSet? = null
     //左右的padding
     private var padingLR = 50f
     //上下的pading
-    private var padingTB = 30f
-    //默认内部高度
-    private var defaultHeight = 160f
+    private var padingTB = 20f
+    //默认item内部高度
+    private var defaultHeight = 140f
     //view的宽度
     private var itemWidth = 0f
     //view的数量
@@ -53,11 +59,21 @@ class SliceBottomBar : ViewGroup {
     private var radius = 30f
 
     private var valueAnimator = ValueAnimator()
+    //item背景颜色
+    private var itemBackGroundColor = 0xa3b18f
+    //Item的文字大小
+    private var textSize = 40.0f
+    //文字的颜色
+    private var textColor = 0xffffff
 
 
-    private fun init() {
+    private fun init(context: Context, attrs: AttributeSet? = null) {
         setWillNotDraw(false)/*设置false之后才能调用ondraw()*/
-        paint.setARGB(255, 93, 87, 206)
+        mAttributeSet = attrs
+        mContext = context
+        getAttrs()
+
+        paint.color=itemBackGroundColor
         valueAnimator.duration = 200L
         valueAnimator.setFloatValues(0f, 1f)
         valueAnimator.removeAllUpdateListeners()
@@ -67,6 +83,19 @@ class SliceBottomBar : ViewGroup {
 
     }
 
+
+    private fun getAttrs() {
+        val typedArray = mContext!!.obtainStyledAttributes(mAttributeSet, R.styleable.sliceBottomBar)
+
+
+        itemBackGroundColor = typedArray.getColor(R.styleable.sliceBottomBar_itemBackgroundColor, 0xa3b18f)
+        textSize = typedArray.getDimension(R.styleable.sliceBottomBar_textSize, 25.0f)
+        textColor = typedArray.getColor(R.styleable.sliceBottomBar_textColor, 0xffffff)
+        defaultHeight = typedArray.getDimension(R.styleable.sliceBottomBar_itemHeight, 120.0f)
+        radius=typedArray.getDimension(R.styleable.sliceBottomBar_itemRadius, 50.0f)
+        Log.d("AnimationBottomBar", "getAttrs:textSize $textSize")
+        typedArray.recycle()
+    }
 
     override fun onFinishInflate() {
         super.onFinishInflate()
@@ -78,7 +107,7 @@ class SliceBottomBar : ViewGroup {
         }
     }
 
-    fun addItem(icon: Int, name: String, color: String, textSize: Float): SliceBottomBar {
+    fun addItem(icon: Int, name: String): SliceBottomBar {
 
         var sliceItemView = SliceItemView(context)
         sliceItemView.setIcon(icon)
@@ -93,6 +122,18 @@ class SliceBottomBar : ViewGroup {
         return this
     }
 
+    fun setItemTextSize(textSize: Float) {
+        for (i in 0 until childCount) {
+            (getChildAt(i) as SliceItemView).setTextSize(textSize)
+        }
+        invalidate()
+    }
+
+    fun setItemColor(color: String) {
+        paint.color = Color.parseColor(color)
+        invalidate()
+    }
+
     fun setRadiu(radius: Float): SliceBottomBar {
         this.radius = radius
         return this
@@ -103,15 +144,23 @@ class SliceBottomBar : ViewGroup {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
         val widthSpecSize = View.MeasureSpec.getSize(widthMeasureSpec)
         val heightSpecSize = View.MeasureSpec.getSize(heightMeasureSpec)
-        setMeasuredDimension(widthSpecSize, (defaultHeight + 2 * padingTB).toInt())
 
-        itemWidth = (widthSpecSize - 2 * padingLR) / itemSize
+        padingTB = max(paddingTop.toFloat(), paddingBottom.toFloat())
+        padingLR = max(paddingLeft.toFloat(), paddingRight.toFloat())
+        selectRectX = padingLR
+        setMeasuredDimension(widthSpecSize, (defaultHeight + 2 * padingTB).toInt())
+        if (itemSize != 0) {
+            itemWidth = (widthSpecSize - 2 * padingLR) / itemSize
+        } else {
+            itemWidth = (widthSpecSize - 2 * padingLR)
+        }
         for (i in 0 until itemSize) {
             var view = getChildAt(i)
             var childWidthMeasureSpec = MeasureSpec.makeMeasureSpec(itemWidth.toInt(), MeasureSpec.EXACTLY)
             var childHeightMeasureSpec = MeasureSpec.makeMeasureSpec(defaultHeight.toInt(), MeasureSpec.EXACTLY)
             view.measure(childWidthMeasureSpec, childHeightMeasureSpec)
         }
+
     }
 
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
