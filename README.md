@@ -43,6 +43,11 @@ https://uimovement.com/ui/7430/navigation-menu/
                                             android:id="@+id/sliceBottomBar"
                                             app:layout_constraintBottom_toBottomOf="parent"
                                             android:layout_height="wrap_content"
+					     android:paddingTop="10dp"
+                                            android:paddingLeft="10dp"
+                                            app:itemHeight="45dp"
+                                            app:itemRadius="10dp"
+                                            app:itemBackgroundColor="#4ABFB5B5"
                                             tools:layout_editor_absoluteX="0dp">
 
     </com.mran.slicebottombar.SliceBottomBar>
@@ -55,8 +60,11 @@ https://uimovement.com/ui/7430/navigation-menu/
         var name = listOf("主页", "盒子", "个人")
         for (i in 0 until icons.size) {
             //向控件中加入单个item
-	    //addItem(图标,名称,颜色,圆角大小)
-            findViewById<SliceBottomBar>(R.id.sliceBottomBar).addItem(icons[i], name[i], "#ffa3d553", 50f)
+	    //addItem(图标,名称,颜色)
+            findViewById<SliceBottomBar>(R.id.sliceBottomBar).addItem(icons[i], name[i])
+	    findViewById<SliceBottomBar>(R.id.sliceBottomBar).setItemColor("#423ac4")
+            findViewById<SliceBottomBar>(R.id.sliceBottomBar).setItemTextSize(30.0f)
+            findViewById<SliceBottomBar>(R.id.sliceBottomBar).setRadiu(30.0f)
         }
         //加入选择监听
           var itemSelect: SliceBottomBar.OnItemSelectListener = object : SliceBottomBar.OnItemSelectListener {
